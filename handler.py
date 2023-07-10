@@ -26,7 +26,7 @@ def inference(event) -> str:
             break
         except Exception as e:
             logging.info(e)
-            sleep(1)
+        sleep(1)
 
     return output
 
