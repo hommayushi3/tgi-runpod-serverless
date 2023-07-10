@@ -1,7 +1,7 @@
 FROM ghcr.io/huggingface/text-generation-inference:latest
 
 RUN pip install --upgrade pip && \
-    pip install text-generation-inference
+    pip install text-generation
 
 RUN mkdir data
 WORKDIR /data
