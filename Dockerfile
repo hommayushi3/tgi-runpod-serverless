@@ -6,7 +6,7 @@ RUN apt-get update && \
     apt-get clean
 
 RUN pip install --upgrade pip && \
-    pip install text-generation git+https://github.com/runpod/runpod-python.git
+    pip install text-generation git+https://github.com/hommayushi3/runpod-python.git
 
 RUN mkdir data
 WORKDIR /data
