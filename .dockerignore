@@ -2,3 +2,4 @@ README.md
 LICENSE
 .gitignore
 test_input.json
+predict-serverless.py

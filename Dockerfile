@@ -1,13 +1,10 @@
-FROM ghcr.io/huggingface/text-generation-inference:latest
+FROM ghcr.io/huggingface/text-generation-inference:1.0.0
 
 RUN pip install --upgrade pip && \
     pip install text-generation runpod
 
 RUN mkdir data
 WORKDIR /data
-
-ENV PROMPT_PREFIX=""
-ENV PROMPT_SUFFIX=""
 
 COPY handler.py /data/handler.py
 COPY entrypoint.sh /data/entrypoint.sh
