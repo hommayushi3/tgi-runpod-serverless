@@ -1,12 +1,16 @@
-FROM ghcr.io/huggingface/text-generation-inference:1.0.0
+FROM ghcr.io/huggingface/text-generation-inference:latest
 
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git && \
     apt-get clean
 
+RUN /opt/conda/bin/conda uninstall python -y && \
+    /opt/conda/bin/conda install python=3.10 -y && \
+    /opt/conda/bin/conda clean -a -y
+
 RUN pip install --upgrade pip && \
-    pip install text-generation git+https://github.com/hommayushi3/runpod-python.git
+    pip install text-generation git+https://github.com/runpod/runpod-python.git
 
 RUN mkdir data
 WORKDIR /data
