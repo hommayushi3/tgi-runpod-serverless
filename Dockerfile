@@ -1,7 +1,7 @@
 FROM ghcr.io/huggingface/text-generation-inference:1.0.0
 
 RUN pip install --upgrade pip && \
-    pip install text-generation runpod
+    pip install text-generation git+https://github.com/runpod/runpod-python.git
 
 RUN mkdir data
 WORKDIR /data

@@ -1,7 +1,6 @@
 import os
-import requests=
+import requests
 from time import sleep
-import logging
 import argparse
 import sys
 
@@ -10,7 +9,7 @@ endpoint_id = os.environ["RUNPOD_ENDPOINT_ID"]
 URI = f"https://api.runpod.ai/v2/{endpoint_id}/run"
 HEADERS = {"Authorization": f"Bearer {os.environ['RUNPOD_AI_API_KEY']}"}
 
-def run(prompt, params={}, stream=False, request_delay=0.2):
+def run(prompt, params={}, stream=False, request_delay=None):
     request = {
         'prompt': prompt,
         'generate_params': params,
@@ -22,7 +21,7 @@ def run(prompt, params={}, stream=False, request_delay=0.2):
     if response.status_code == 200:
         data = response.json()
         task_id = data.get('id')
-        return wait_for_output(task_id, stream=stream, request_delay=request_delay)
+        return wait_for_output(task_id, stream=stream, request_delay=request_delay or 0.2)
 
 
 def cancel_task(task_id):
@@ -78,4 +77,5 @@ Input: 17-year-old male, has come to the student health clinic complaining of he
 - fh:father had MI recently,mother has thyroid dz
 - sh:non-smoker,mariguana 5-6 months ago,3 beers on the weekend, basketball at school
 - sh:no std,no other significant medical conditions. ASSISTANT: """
-    print(run(prompt))
+    args = parser.parse_args()
+    print(run(prompt, params=args.params_json, stream=args.stream, request_delay=args.request_delay))
