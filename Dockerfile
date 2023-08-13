@@ -11,4 +11,7 @@ COPY entrypoint.sh /data/entrypoint.sh
 
 RUN chmod +x /data/entrypoint.sh
 
+ENV HUGGINGFACE_HUB_CACHE /runpod-volume/hub
+ENV TRANSFORMERS_CACHE /runpod-volume/hub
+
 ENTRYPOINT [ "./entrypoint.sh" ]

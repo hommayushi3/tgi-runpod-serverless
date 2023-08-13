@@ -6,6 +6,7 @@ import inspect
 import warnings
 import asyncio
 import time
+from json import loads
 
 class RequestCounter:
     """
@@ -37,7 +38,7 @@ valid_non_stream_arguments = inspect.getfullargspec(client.generate).args
 valid_stream_arguments = inspect.getfullargspec(client.generate_stream).args
 
 # Get default generate parameters from environment variable
-DEFAULT_GENERATE_PARAMS = os.getenv("DEFAULT_GENERATE_PARAMS", {})
+DEFAULT_GENERATE_PARAMS = loads(os.getenv("DEFAULT_GENERATE_PARAMS", "{}"))
 
 # Verify that the default generate parameters are valid
 temp_default_generate_params = copy(DEFAULT_GENERATE_PARAMS)
