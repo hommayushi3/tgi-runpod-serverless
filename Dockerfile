@@ -5,9 +5,8 @@ RUN apt-get update && \
     apt-get install -y git && \
     apt-get clean
 
-RUN /opt/conda/bin/conda uninstall python -y && \
-    /opt/conda/bin/conda install python=3.10 -y && \
-    /opt/conda/bin/conda clean -a -y
+RUN /opt/conda/bin/conda install python=3.10 -y && \
+    /opt/conda/bin/conda clean -ya
 
 RUN pip install --upgrade pip && \
     pip install text-generation git+https://github.com/runpod/runpod-python.git
