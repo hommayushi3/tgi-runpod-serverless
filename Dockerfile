@@ -1,5 +1,7 @@
 FROM ghcr.io/huggingface/text-generation-inference:1.0.0
 
+RUN apt update & apt install -y git & apt-get clean
+
 RUN pip install --upgrade pip && \
     pip install text-generation git+https://github.com/runpod/runpod-python.git
 
