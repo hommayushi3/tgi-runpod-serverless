@@ -3,6 +3,7 @@ import requests
 from time import sleep
 import argparse
 import sys
+import json
 
 
 endpoint_id = os.environ["RUNPOD_ENDPOINT_ID"]
@@ -78,4 +79,4 @@ Input: 17-year-old male, has come to the student health clinic complaining of he
 - sh:non-smoker,mariguana 5-6 months ago,3 beers on the weekend, basketball at school
 - sh:no std,no other significant medical conditions. ASSISTANT: """
     args = parser.parse_args()
-    print(run(prompt, params=args.params_json, stream=args.stream, request_delay=args.request_delay))
+    print(run(prompt, params=json.loads(args.params_json), stream=args.stream, request_delay=args.request_delay))
