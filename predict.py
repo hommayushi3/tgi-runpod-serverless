@@ -67,7 +67,8 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--stream', action='store_true', help='Stream output')
     parser.add_argument('-p', '--params_json', type=str, help='JSON string of generation params')
     parser.add_argument('-d', '--request_delay', type=float, help='Number of seconds to wait between each status check')
-    prompt = """USER: From the following clinical notes, what tests, diagnoses, and recommendations should the I give? Provide your answer as a detailed report with labeled sections "Diagnostic Tests", "Possible Diagnoses", and "Patient Recommendations".
+    prompt = """<|im_start|>user
+From the following clinical notes, what tests, diagnoses, and recommendations should the I give? Provide your answer as a detailed report with labeled sections "Diagnostic Tests", "Possible Diagnoses", and "Patient Recommendations".
 
 Input: 17-year-old male, has come to the student health clinic complaining of heart pounding. Mr. Cleveland's mother has given verbal consent for a history, physical examination, and treatment
 - began 2-3 months ago,sudden,intermittent for 2 days(lasting 3-4 min),worsening,non-allev/aggrav
@@ -77,6 +78,8 @@ Input: 17-year-old male, has come to the student health clinic complaining of he
 - pmh:non,meds :aderol (from a friend),nkda
 - fh:father had MI recently,mother has thyroid dz
 - sh:non-smoker,mariguana 5-6 months ago,3 beers on the weekend, basketball at school
-- sh:no std,no other significant medical conditions. ASSISTANT: """
+- sh:no std,no other significant medical conditions.<|im_end|>
+<|im_start|>assistant
+"""
     args = parser.parse_args()
     print(run(prompt, params=json.loads(args.params_json), stream=args.stream, request_delay=args.request_delay))
