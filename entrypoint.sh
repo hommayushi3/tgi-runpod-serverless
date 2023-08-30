@@ -7,4 +7,4 @@ fi
 
 text-generation-launcher &
 
-python -m handler.py
+conda run -n py310 python -m handler.py
