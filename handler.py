@@ -7,7 +7,6 @@ import warnings
 import asyncio
 import time
 from json import loads
-from typing import Generator
 
 class RequestCounter:
     """
@@ -28,7 +27,7 @@ class RequestCounter:
 request_counter = RequestCounter()
 
 def concurrency_controller() -> bool:
-    return request_counter.counter > 10
+    return False
 
 # Create the text-generation-inference asynchronous client
 client = AsyncClient(base_url="http://localhost:80")
@@ -52,7 +51,7 @@ for key in DEFAULT_GENERATE_PARAMS.keys():
 DEFAULT_GENERATE_PARAMS = temp_default_generate_params
 
 
-async def handler(job: dict) -> dict[str, list]:
+async def handler(job):
     '''
     This is the handler function that will be called by the serverless worker.
     '''
@@ -85,12 +84,13 @@ async def handler(job: dict) -> dict[str, list]:
             if not response.token.special:
                 result = {"text": response.token.text}
     else:
-        result = client.generate(prompt, **generate_params)
+        result = await client.generate(prompt, **generate_params)
+        result = {"text": result.generated_text}
 
     # Decrement the request counter
     await request_counter.decrement()
     print(f"Finished request in {int(time.time() - start)} seconds, active requests: {request_counter.counter}")
-    return {"text": result.generated_text}
+    return result
 
 
 # Start the serverless worker
