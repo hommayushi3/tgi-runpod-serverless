@@ -85,12 +85,12 @@ def handler(job):
             if not response.token.special:
                 result = {"text": response.token.text}
     else:
-        for _ in range(10):
+        for _ in range(20):
             try:
                 result = client.generate(prompt, **generate_params)
                 break
             except:
-                time.sleep(5)
+                time.sleep(10)
         result = {"text": result.generated_text}
 
     # Decrement the request counter

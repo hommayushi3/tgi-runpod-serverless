@@ -39,8 +39,9 @@ def wait_for_output(task_id, stream=False, request_delay=0.2):
         response = requests.get(url, headers=HEADERS)
         if response.status_code == 200:
             data = response.json()
-
-            print("Status", data.get("status"), "Output", data.get("output"), "Error", json.loads(data.get("error", "{}")).get("error_traceback"))
+            if json.dumps(data) != previous_output:
+                previous_output = json.dumps(data)
+                print("Status", data.get("status"), "Output", data.get("output"), "Error", json.loads(data.get("error", "{}")).get("error_traceback"))
             if "error" in data:
                 break
                 
