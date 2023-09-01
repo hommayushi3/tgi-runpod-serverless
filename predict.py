@@ -42,15 +42,16 @@ def wait_for_output(task_id, stream=False, request_delay=0.2):
             if json.dumps(data) != previous_output:
                 previous_output = json.dumps(data)
                 if "stream" in data and len(data["stream"]) > 0:
-                    print("OUTPUT:")
-                    print(data["stream"][0]["text"])
+                    sys.stdout.write(data["stream"][0]['output']['text'][len(previous_output):])
+                    sys.stdout.flush()
+                    previous_output = data["stream"][0]['output']['text']
                 elif "error" in data:
                     print("ERROR:")
                     print(data["error"])
                 else:
                     print(data)
 
-            if "error" in data or ("stream" in data and len(data["stream"]) > 0):
+            if "error" in data:
                 break
                 
         elif response.status_code >= 400:

@@ -106,5 +106,5 @@ def handler(job):
 # Start the serverless worker
 print("Starting the TGI serverless worker with streaming enabled.")
 runpod.serverless.start(
-    {"handler": handler, "concurrency_controller": concurrency_controller}
+    {"handler": handler, "concurrency_controller": concurrency_controller, "return_aggregate_stream": True}
 )
