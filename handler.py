@@ -29,7 +29,6 @@ request_counter = RequestCounter()
 def concurrency_controller() -> bool:
     return request_counter.counter > 0
 
-time.sleep(10)
 
 # Create the text-generation-inference asynchronous client
 client = Client(base_url="http://localhost:80")
@@ -86,7 +85,12 @@ def handler(job):
             if not response.token.special:
                 result = {"text": response.token.text}
     else:
-        result = client.generate(prompt, **generate_params)
+        for _ in range(10):
+            try:
+                result = client.generate(prompt, **generate_params)
+                break
+            except:
+                time.sleep(5)
         result = {"text": result.generated_text}
 
     # Decrement the request counter
