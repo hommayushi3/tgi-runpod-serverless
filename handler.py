@@ -1,6 +1,6 @@
 import runpod
 import os
-from text_generation import AsyncClient
+from text_generation import Client
 from copy import copy
 import inspect
 import warnings
@@ -31,7 +31,7 @@ def concurrency_controller() -> bool:
 
 
 # Create the text-generation-inference asynchronous client
-client = AsyncClient(base_url="http://localhost:80")
+client = Client(base_url="http://localhost:80")
 
 # Get valid arguments for generate and generate_stream
 valid_non_stream_arguments = inspect.getfullargspec(client.generate).args
@@ -52,11 +52,11 @@ for key in DEFAULT_GENERATE_PARAMS.keys():
 DEFAULT_GENERATE_PARAMS = temp_default_generate_params
 
 
-async def handler(job):
+def handler(job):
     '''
     This is the handler function that will be called by the serverless worker.
     '''
-    await request_counter.increment()
+    request_counter.increment()
     print(f"Starting request {job}, active requests: {request_counter.counter}")
     start = time.time()
 
@@ -82,8 +82,8 @@ async def handler(job):
     if stream:
         for _ in range(20):
             try:
-                results_generator = await client.generate_stream(prompt, **generate_params)
-                async for response in results_generator:
+                results_generator = client.generate_stream(prompt, **generate_params)
+                for response in results_generator:
                     if not response.token.special:
                         yield {"text": response.token.text}
             except Exception:
@@ -99,7 +99,7 @@ async def handler(job):
         yield {"text": result.generated_text}
 
     # Decrement the request counter
-    await request_counter.decrement()
+    request_counter.decrement()
     print(f"Finished request in {int(time.time() - start)} seconds, active requests: {request_counter.counter}")
 
 
