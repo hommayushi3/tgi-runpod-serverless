@@ -1,6 +1,6 @@
 import runpod
 import os
-from text_generation import Client
+from text_generation import AsyncClient
 from copy import copy
 import inspect
 import warnings
@@ -31,7 +31,7 @@ def concurrency_controller() -> bool:
 
 
 # Create the text-generation-inference asynchronous client
-client = Client(base_url="http://localhost:80")
+client = AsyncClient(base_url="http://localhost:80")
 
 # Get valid arguments for generate and generate_stream
 valid_non_stream_arguments = inspect.getfullargspec(client.generate).args
@@ -52,11 +52,11 @@ for key in DEFAULT_GENERATE_PARAMS.keys():
 DEFAULT_GENERATE_PARAMS = temp_default_generate_params
 
 
-def handler(job):
+async def handler(job):
     '''
     This is the handler function that will be called by the serverless worker.
     '''
-    request_counter.increment()
+    await request_counter.increment()
     print(f"Starting request {job}, active requests: {request_counter.counter}")
     start = time.time()
 
@@ -80,10 +80,15 @@ def handler(job):
 
     # Send request to Text Generation Inference Server and yield results
     if stream:
-        results_generator = client.generate_stream(prompt, **generate_params)
-        for response in results_generator:
-            if not response.token.special:
-                result = {"text": response.token.text}
+        for _ in range(20):
+            try:
+                results_generator = await client.generate_stream(prompt, **generate_params)
+                async for response in results_generator:
+                    if not response.token.special:
+                        yield {"text": response.token.text}
+            except Exception:
+                time.sleep(10)
+
     else:
         for _ in range(20):
             try:
@@ -91,12 +96,11 @@ def handler(job):
                 break
             except:
                 time.sleep(10)
-        result = {"text": result.generated_text}
+        yield {"text": result.generated_text}
 
     # Decrement the request counter
-    request_counter.decrement()
+    await request_counter.decrement()
     print(f"Finished request in {int(time.time() - start)} seconds, active requests: {request_counter.counter}")
-    return result
 
 
 # Start the serverless worker
