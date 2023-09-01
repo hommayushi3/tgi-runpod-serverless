@@ -32,34 +32,22 @@ def cancel_task(task_id):
 
 
 def wait_for_output(task_id, stream=False, request_delay=0.2):
-    url = f"https://api.runpod.ai/v2/{endpoint_id}/stream/{task_id}"
+    url = f"https://api.runpod.ai/v2/{endpoint_id}/status/{task_id}"
     previous_output = ''
 
-    try:
-        while True:
-            response = requests.get(url, headers=HEADERS)
-            if response.status_code == 200:
-                data = response.json()
-                if len(data['stream']) > 0:
-                    new_output = data['stream'][0]['output']
+    while True:
+        response = requests.get(url, headers=HEADERS)
+        if response.status_code == 200:
+            data = response.json()
 
-                    if stream:
-                        sys.stdout.write(new_output)
-                        sys.stdout.flush()
-                    previous_output = new_output
+            print("Status", data.get("status"), "Output", data.get("output"), "Error", json.loads(data.get("error", "{}")).get("error_traceback"))
+            if "error" in data:
+                break
                 
-                if data.get('status') == 'COMPLETED':
-                    if not stream:
-                        return previous_output
-                    break
-                    
-            elif response.status_code >= 400:
-                print(response)
-            # Sleep for request_delay seconds between each request
-            sleep(request_delay)
-    except Exception as e:
-        print("Error:", e)
-        cancel_task(task_id)
+        elif response.status_code >= 400:
+            print(response)
+        # Sleep for request_delay seconds between each request
+        sleep(request_delay)
 
 
 if __name__ == '__main__':
