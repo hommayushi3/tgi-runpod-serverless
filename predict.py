@@ -52,6 +52,7 @@ def wait_for_output(task_id, stream=False, request_delay=0.2):
                     print(data)
 
             if "error" in data:
+                print(data["error"])
                 break
                 
         elif response.status_code >= 400:
@@ -65,7 +66,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--stream', action='store_true', help='Stream output')
     parser.add_argument('-p', '--params_json', type=str, help='JSON string of generation params')
     parser.add_argument('-d', '--request_delay', type=float, help='Number of seconds to wait between each status check')
-    prompt = """### Instruction:
+    prompt = """### User Message
 From the following clinical notes, what tests, diagnoses, and recommendations should the I give? Provide your answer as a detailed report with labeled sections "Diagnostic Tests", "Possible Diagnoses", and "Patient Recommendations".
 
 Input: 17-year-old male, has come to the student health clinic complaining of heart pounding. Mr. Cleveland's mother has given verbal consent for a history, physical examination, and treatment
@@ -78,7 +79,7 @@ Input: 17-year-old male, has come to the student health clinic complaining of he
 - sh:non-smoker,mariguana 5-6 months ago,3 beers on the weekend, basketball at school
 - sh:no std,no other significant medical conditions.
 
-### Response:
+### Assistant
 """
     args = parser.parse_args()
     print(run(prompt, params=json.loads(args.params_json), stream=args.stream, request_delay=args.request_delay))

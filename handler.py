@@ -80,7 +80,7 @@ def handler(job):
 
     # Send request to Text Generation Inference Server and yield results
     if stream:
-        for _ in range(20):
+        for _ in range(30):
             try:
                 results_generator = client.generate_stream(prompt, **generate_params)
                 for response in results_generator:
@@ -90,7 +90,7 @@ def handler(job):
                 time.sleep(10)
 
     else:
-        for _ in range(20):
+        for _ in range(30):
             try:
                 result = client.generate(prompt, **generate_params)
                 break
