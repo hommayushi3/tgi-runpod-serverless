@@ -27,7 +27,7 @@ class RequestCounter:
 request_counter = RequestCounter()
 
 def concurrency_controller() -> bool:
-    return False
+    return request_counter.counter > 0
 
 # Create the text-generation-inference asynchronous client
 client = AsyncClient(base_url="http://localhost:80")
